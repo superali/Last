@@ -59,7 +59,7 @@ public class DetailActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+    public static class DetailFragment extends Fragment {
         private static final int DETAIL_LOADER = 0;
 
         private static final String[] FORECAST_COLUMNS = {
@@ -100,32 +100,17 @@ public class DetailActivity extends ActionBarActivity {
 
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-            // The detail Activity called via intent.  Inspect the intent for forecast data.
+            Intent intent = getActivity().getIntent();
+            if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
+                String fs = intent.getStringExtra(Intent.EXTRA_TEXT);
+                ((TextView) rootView.findViewById(R.id.detail_text)).setText(fs);
+            }
 
 
             return rootView;
         }
 
-        @Override
-        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            inflater.inflate(R.menu.detailfragment, menu);
 
-            // Retrieve the share menu item
-            MenuItem menuItem = menu.findItem(R.id.action_share);
-
-            // Get the provider and hold onto it to set/change the share intent.
-             mShareActionProvider =
-                    (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
-
-            // Attach an intent to this ShareActionProvider.  You can update this at any time,
-            // like when the user selects a new piece of data they might like to share.
-            if (mForecast != null ) {
-                mShareActionProvider.setShareIntent(createShareForecastIntent());
-            } else {
-                Log.d(LOG_TAG, "Share Action Provider is null?");
-            }
-        }
 
         private Intent createShareForecastIntent() {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -136,58 +121,7 @@ public class DetailActivity extends ActionBarActivity {
             return shareIntent;
         }
 
-        @Override
-        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-            getLoaderManager().initLoader(DETAIL_LOADER,null,this);
-        }
 
-        @Override
-        public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-            Log.v(LOG_TAG,"onCreateLoader");
-            Intent intent = getActivity().getIntent();
-
-            if (intent == null){
-                return null;
-            }
-            return new CursorLoader(
-                    getActivity(),
-                    intent.getData(),
-                    FORECAST_COLUMNS,
-                    null,
-                    null,
-                    null
-            );
-        }
-
-        @Override
-        public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-            Log.v(LOG_TAG,"onLoadFinished");
-
-            if (!cursor.moveToFirst()){return;}
-            String dateString = Utility.formatDate(cursor.getLong(COL_WEATHER_DATE));
-
-            String weatherDesc = cursor.getString(COL_WEATHER_DESC);
-
-            boolean isMetric = Utility.isMetric(getActivity());
-            String high = Utility.formatTemperature(getActivity(), cursor.getDouble(COL_WEATHER_MAX_TEMP),isMetric);
-            String low = Utility.formatTemperature(getActivity(), cursor.getDouble(COL_WEATHER_MIN_TEMP),isMetric);
-            mForecast =String.format("%s - %s - %s/%s",
-                    dateString,weatherDesc,high,low);
-            TextView detailTv =(TextView)getView().findViewById(R.id.detail_text);
-            detailTv.setText(mForecast);
-
-            if (mShareActionProvider != null ) {
-                mShareActionProvider.setShareIntent(createShareForecastIntent());
-            }
-
-
-        }
-
-        @Override
-        public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-        }
     }
 }
 

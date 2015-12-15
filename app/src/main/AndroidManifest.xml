@@ -29,5 +29,8 @@
     <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.baitran.ali.last.MainActivity" />
 </activity>
     <provider android:authorities="com.example.android.sunshine.app" android:name=".WeatherProvider" />
-</application>
+        <service android:name=".service.FirstService" />
+        <receiver android:name=".service.FirstService$AlarmReceiver"/>
+
+    </application>
 </manifest>

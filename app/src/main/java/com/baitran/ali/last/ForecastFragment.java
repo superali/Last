@@ -5,6 +5,9 @@ package com.baitran.ali.last;
  */
 
 
+        import android.app.AlarmManager;
+        import android.app.PendingIntent;
+        import android.content.Context;
         import android.content.Intent;
         import android.content.SharedPreferences;
         import android.database.Cursor;
@@ -15,6 +18,7 @@ package com.baitran.ali.last;
         import android.support.v4.content.CursorLoader;
         import android.support.v4.content.Loader;
         import android.support.v4.widget.SimpleCursorAdapter;
+        import android.util.Log;
         import android.view.LayoutInflater;
         import android.view.Menu;
         import android.view.MenuInflater;
@@ -25,6 +29,7 @@ package com.baitran.ali.last;
         import android.widget.ListView;
 
         import  com.baitran.ali.last.WeatherContract;
+        import com.baitran.ali.last.service.FirstService;
 
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
@@ -98,7 +103,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Get a reference to the ListView, and attach this adapter to it.
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
-        /*
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -107,22 +112,23 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 if (null != cursor && cursor.moveToPosition(i)){
                     boolean isMetric= Utility.isMetric(getActivity());
 
-
                     String forecast =
                              Utility.formatDate(cursor.getLong(COL_WEATHER_DATE)) +" - "+
                              cursor.getString(COL_WEATHER_DESC)+ " - "+
-                             Utility.formatTemperature(cursor.getDouble(COL_WEATHER_MAX_TEMP),isMetric)+"/"+
-                             Utility.formatTemperature(cursor.getDouble(COL_WEATHER_MIN_TEMP),isMetric);
+                             Utility.formatTemperature(getActivity(), cursor.getDouble(COL_WEATHER_MAX_TEMP),isMetric)+"/"+
+                             Utility.formatTemperature(getActivity(), cursor.getDouble(COL_WEATHER_MIN_TEMP),isMetric);
+
 
                     Intent intent = new Intent(getActivity(),DetailActivity.class).putExtra(
                             Intent.EXTRA_TEXT,forecast
                     );
                     startActivity(intent);
+
                 }
                 }
 
 
-        });*/
+        });
 
         return rootView;
     }
@@ -134,9 +140,20 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather() {
-        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
+        /*Intent alarmIntent = new Intent(getActivity(),FirstService.AlarmReceiver.class);
+        alarmIntent.putExtra(FirstService.LOCATION_QUERY_EXTRA,mlocation);
+        PendingIntent pi =  PendingIntent.getBroadcast(getActivity(),0,alarmIntent,PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager am = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE );
+        am.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+5000,pi);
+        weatherTask = new FetchWeatherTask(getActivity());
         String location = Utility.getPreferredLocation(getActivity());
-        weatherTask.execute(location);
+        weatherTask.execute(location);*/
+        Intent intent = new Intent(getActivity(), FirstService.class);
+        intent.putExtra(FirstService.LOCATION_QUERY_EXTRA,
+                Utility.getPreferredLocation(getActivity()));
+
+        getActivity().startService(intent);
+
     }
 
     @Override
