@@ -154,7 +154,11 @@ public class WeatherContract {
             return CONTENT_URI.buildUpon().appendPath(locationSetting)
                     .appendPath(Long.toString(normalizeDate(date))).build();
         }
+        public static Uri buildWeatherLocationWithStringDate( String locationSetting, String date) {
 
+            return CONTENT_URI.buildUpon().appendPath(locationSetting)
+                    .appendPath(date).build();
+        }
         public static String getLocationSettingFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }

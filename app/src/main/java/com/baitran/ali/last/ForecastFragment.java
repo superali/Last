@@ -112,15 +112,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 if (null != cursor && cursor.moveToPosition(i)){
                     boolean isMetric= Utility.isMetric(getActivity());
 
-                    String forecast =
-                             Utility.formatDate(cursor.getLong(COL_WEATHER_DATE)) +" - "+
-                             cursor.getString(COL_WEATHER_DESC)+ " - "+
-                             Utility.formatTemperature(getActivity(), cursor.getDouble(COL_WEATHER_MAX_TEMP),isMetric)+"/"+
-                             Utility.formatTemperature(getActivity(), cursor.getDouble(COL_WEATHER_MIN_TEMP),isMetric);
-
 
                     Intent intent = new Intent(getActivity(),DetailActivity.class).putExtra(
-                            Intent.EXTRA_TEXT,forecast
+                            DetailFragment.DATE_KEY,""+cursor.getLong(COL_WEATHER_DATE)
                     );
                     startActivity(intent);
 
