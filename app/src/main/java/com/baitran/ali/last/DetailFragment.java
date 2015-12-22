@@ -115,15 +115,23 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //if (null != savedInstanceState)
-            getLoaderManager().initLoader(DETAIL_LOADER,null,this);
-    }
+        if (null != savedInstanceState)
+        {
+            mLocation=savedInstanceState.getString(LOCATION_KEY);
+        }
+        Bundle args = getArguments();
+        //Intent intent = getActivity().getIntent();
+        if (args !=null &&args.containsKey(DetailFragment.DATE_KEY)){
+
+                getLoaderManager().initLoader(DETAIL_LOADER,null,this);
+    }}
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         //String dateString = getActivity().getIntent().getStringExtra(Intent.EXTRA_TEXT);
-        String  dateString= getActivity().getIntent().getStringExtra(DATE_KEY);
+       // String  dateString= getActivity().getIntent().getStringExtra(DATE_KEY);
 
+        String  dateString= getArguments().getString(DATE_KEY);
 
         mLocation = Utility.getPreferredLocation(getActivity());
         Log.v(LOG_TAG,"locaaaaaaaaaaation :"+mLocation);
@@ -201,7 +209,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onResume() {
         super.onResume();
-        if (null!= mLocation && !mLocation.equals(Utility.getPreferredLocation(getActivity()))){
+        Bundle args = getArguments();
+
+       // Intent intent = getActivity().getIntent();
+        if (args !=null &&args.containsKey(DetailFragment.DATE_KEY)&&
+                null!= mLocation && !mLocation.equals(Utility.getPreferredLocation(getActivity()))){
             getLoaderManager().restartLoader(DETAIL_LOADER,null,this);
         }
     }

@@ -63,7 +63,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public static final int COL_WEATHER_CONDITION_ID = 5;
     public static final int COL_LOCATION_SETTING = 6;
 
-
+    public interface CallBack{
+        public void onItemSelected(String date);
+    }
     public ForecastFragment() {
     }
 
@@ -111,12 +113,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 Cursor cursor = mForecastAdapter.getCursor();
                 if (null != cursor && cursor.moveToPosition(i)){
                     boolean isMetric= Utility.isMetric(getActivity());
+                    ((CallBack)getActivity()).onItemSelected(""+cursor.getLong(COL_WEATHER_DATE));
 
 
-                    Intent intent = new Intent(getActivity(),DetailActivity.class).putExtra(
+                    /*Intent intent = new Intent(getActivity(),DetailActivity.class).putExtra(
                             DetailFragment.DATE_KEY,""+cursor.getLong(COL_WEATHER_DATE)
                     );
-                    startActivity(intent);
+                    startActivity(intent);*/
 
                 }
                 }

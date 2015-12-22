@@ -8,19 +8,45 @@ package com.baitran.ali.last;
         import android.view.Menu;
         import android.view.MenuItem;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ForecastFragment.CallBack{
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private boolean mTwoPane;
+
+    @Override
+    public void onItemSelected(String date) {
+        if (mTwoPane){
+            Bundle args = new Bundle();
+            args.putString(DetailFragment.DATE_KEY,date);
+            DetailFragment fragment =new DetailFragment();
+            fragment.setArguments(args);
+            getSupportFragmentManager().beginTransaction().replace(R.id.weather_detail_container,fragment)
+                    .commit();
+        }else {
+
+                    Intent intent = new Intent(this,DetailActivity.class).putExtra(
+                            DetailFragment.DATE_KEY,date
+                    );
+                    startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment())
-                    .commit();
+        if (findViewById(R.id.weather_detail_container )!= null){
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.weather_detail_container, new DetailFragment())
+                        .commit();
+            }
+        }else {
+            mTwoPane =false;
         }
+
     }
 
     @Override

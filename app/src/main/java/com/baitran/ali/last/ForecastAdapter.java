@@ -32,16 +32,7 @@ public class ForecastAdapter extends CursorAdapter {
         return 2;
     }
 
-    /**
-     * Prepare the weather high/lows for presentation.
-     */
 
-
-
-
-    /*
-        Remember that these views are reused as needed.
-     */
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         int viewType = getItemViewType(cursor.getPosition());
