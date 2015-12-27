@@ -1,8 +1,29 @@
+
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-    </style>
+<!-- Base application theme. -->
+<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <item name="actionBarStyle">@style/ActionBar.Solid.Last</item>
+</style>
+
+<style name="ForecastListStyle" >
+
+</style>
+
+<!-- ActionBar style -->
+<style name="ActionBar.Solid.Last" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <item name="background">@color/light_blue</item>
+</style>
+
+<!-- Main activity theme -->
+<style name="ForecastTheme" parent="AppTheme">
+    <item name="actionBarStyle">@style/ActionBar.Solid.Last.NoTitle</item>
+</style>
+
+<!-- Main activity action bar style -->
+<style name="ActionBar.Solid.Last.NoTitle" parent="@style/ActionBar.Solid.Last">
+    <item name="displayOptions">useLogo|showHome</item>
+    <item name="logo">@drawable/ic_logo</item>
+</style>
 
 </resources>

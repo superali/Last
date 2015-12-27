@@ -30,12 +30,17 @@ package com.baitran.ali.last;
 
         import  com.baitran.ali.last.WeatherContract;
         import com.baitran.ali.last.service.FirstService;
+        import com.baitran.ali.last.sync.MySyncAdapter;
 
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private String  mlocation ;
+    private int  mPosition ;
+    private static final String  SELECTED_KEY="selected_item" ;
+    private ListView mListView;
+    private  boolean mUseTodayLayout;
     private static final int FORECAST_LOADER = 0;
     private ForecastAdapter mForecastAdapter;
     private static final String[] FORECAST_COLUMNS = {
@@ -51,7 +56,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
             WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
             WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
-            WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING
+            WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
+            WeatherContract.LocationEntry.COLUMN_COORD_LAT,
+            WeatherContract.LocationEntry.COLUMN_COORD_LONG
+
     };
 
     // These indices are tied to FORECAST_COLUMNS. If FORECAST_COLUMNS changes, these must change
@@ -62,6 +70,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public static final int COL_WEATHER_MIN_TEMP = 4;
     public static final int COL_WEATHER_CONDITION_ID = 5;
     public static final int COL_LOCATION_SETTING = 6;
+    public static final int COL_LOCATION_LAT = 7;
+    public static final int COL_LOCATION_LONG = 8;
+
 
     public interface CallBack{
         public void onItemSelected(String date);
@@ -87,11 +98,21 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_refresh) {
-            updateWeather();
+        //if (id == R.id.action_refresh) {
+           // updateWeather();
+          //  return true;
+       // }
+        if (id == R.id.action_map) {
+            openPreferredLocationInMap();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public  void setUseTodayLayout(boolean UseTodayLayout){
+        mUseTodayLayout = UseTodayLayout;
+        if (mForecastAdapter !=null){
+            mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+        }
     }
 
     @Override
@@ -103,10 +124,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        listView.setAdapter(mForecastAdapter);
+        mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        mListView.setAdapter(mForecastAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //SimpleCursorAdapter adapter = (SimpleCursorAdapter)adapterView.getAdapter();
@@ -115,7 +136,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                     boolean isMetric= Utility.isMetric(getActivity());
                     ((CallBack)getActivity()).onItemSelected(""+cursor.getLong(COL_WEATHER_DATE));
 
-
+                    mPosition=i;
                     /*Intent intent = new Intent(getActivity(),DetailActivity.class).putExtra(
                             DetailFragment.DATE_KEY,""+cursor.getLong(COL_WEATHER_DATE)
                     );
@@ -126,8 +147,20 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
 
         });
+        if (savedInstanceState !=null && savedInstanceState.containsKey(SELECTED_KEY)){
+            mPosition = savedInstanceState.getInt(SELECTED_KEY);
+        }
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mPosition != ListView.INVALID_POSITION){
+            outState.putInt(SELECTED_KEY,mPosition);
+        }
+        super.onSaveInstanceState(outState);
+
     }
 
     @Override
@@ -144,12 +177,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         am.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+5000,pi);
         weatherTask = new FetchWeatherTask(getActivity());
         String location = Utility.getPreferredLocation(getActivity());
-        weatherTask.execute(location);*/
+        weatherTask.execute(location);
         Intent intent = new Intent(getActivity(), FirstService.class);
         intent.putExtra(FirstService.LOCATION_QUERY_EXTRA,
                 Utility.getPreferredLocation(getActivity()));
 
-        getActivity().startService(intent);
+        getActivity().startService(intent);*/
+        MySyncAdapter.initializeSync(getActivity());
 
     }
 
@@ -188,10 +222,33 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mForecastAdapter.swapCursor(cursor);
+        if (mPosition !=ListView.INVALID_POSITION){
+            mListView.setSelection(mPosition);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mForecastAdapter.swapCursor(null);
+    }
+    private void openPreferredLocationInMap() {
+        if (null != mForecastAdapter) {
+            Cursor cursor = mForecastAdapter.getCursor();
+            if (null != cursor) {
+                cursor.moveToPosition(0);
+                String poslat= cursor.getString(COL_LOCATION_LAT);
+                String poslong =cursor.getString(COL_LOCATION_LONG);
+                Uri geoLocation = Uri.parse("geo:" + poslat + "," + poslong);
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(geoLocation);
+
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Log.d("Cant execute", "Couldn't call " + poslat +" "+ poslong+", no receiving apps installed!");
+                }
+            }
+        }
     }
 }

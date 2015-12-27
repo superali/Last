@@ -21,10 +21,13 @@ public class ForecastAdapter extends CursorAdapter {
 
     private final int VIEW_TYPE_TODAY = 0;
     private final int VIEW_TYPE_FUTURE_DAY = 1;
-
+    public boolean mUseTodayLayout;
+    public  void setUseTodayLayout(boolean UseTodayLayout){
+        mUseTodayLayout = UseTodayLayout;
+    }
     @Override
     public int getItemViewType(int position) {
-        return (position== 0) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+        return (position== 0 && mUseTodayLayout) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
     }
 
     @Override
@@ -74,6 +77,7 @@ public class ForecastAdapter extends CursorAdapter {
         String desc =cursor.getString(ForecastFragment.COL_WEATHER_DESC);
         //TextView descTextView = (TextView)view.findViewById(R.id.list_item_forecast_textview);
         viewHolder.descView.setText(desc);
+        viewHolder.iconView.setContentDescription(desc);
         boolean isMetric =Utility.isMetric(context);
         float high =cursor.getFloat(ForecastFragment.COL_WEATHER_MAX_TEMP);
         //TextView highTv =(TextView)view.findViewById(R.id.list_item_high_textview);

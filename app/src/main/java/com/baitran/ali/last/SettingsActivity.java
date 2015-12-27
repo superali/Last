@@ -15,9 +15,12 @@ package com.baitran.ali.last;
         import android.preference.PreferenceManager;
         import android.support.annotation.Nullable;
 
+        import com.baitran.ali.last.sync.MySyncAdapter;
+
 
 public class SettingsActivity extends PreferenceActivity
         implements Preference.OnPreferenceChangeListener {
+    boolean mBindingPreferences = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class SettingsActivity extends PreferenceActivity
      * is changed.)
      */
     private void bindPreferenceSummaryToValue(Preference preference) {
+        mBindingPreferences = true;
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(this);
 
@@ -46,12 +50,17 @@ public class SettingsActivity extends PreferenceActivity
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
+        mBindingPreferences = false;
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
         String stringValue = value.toString();
-
+        if(!mBindingPreferences){
+            MySyncAdapter.syncImmediately(this);
+        }else{
+            getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI,null);
+        }
         if (preference instanceof ListPreference) {
             // For list preferences, look up the correct display value in
             // the preference's 'entries' list (since they have separate labels/values).
