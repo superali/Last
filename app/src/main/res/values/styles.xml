@@ -13,7 +13,7 @@
 <!-- ActionBar style -->
 <style name="ActionBar.Solid.Last" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
     <item name="background">@color/light_blue</item>
-</style>
+    <item name="android:windowContentOverlay">@null</item></style>
 
 <!-- Main activity theme -->
 <style name="ForecastTheme" parent="AppTheme">

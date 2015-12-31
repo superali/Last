@@ -8,4 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         style="@style/ForecastListStyle"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+android:text="@string/empty_string"
+        android:id="@+id/empty_view"/>
 </FrameLayout>

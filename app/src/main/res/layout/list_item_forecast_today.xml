@@ -21,6 +21,8 @@
             android:id="@+id/list_item_date_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+
             android:textAppearance="?android:textAppearanceLarge"
             android:fontFamily="sans-serif-condensed"
             />
@@ -29,7 +31,7 @@
             android:id="@+id/list_item_high_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:textColor="@color/white"
         android:textSize="72sp"
             android:fontFamily="sans-serif-light"
             />
@@ -39,6 +41,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="36sp"
+            android:textColor="@color/white"
+
             android:fontFamily="sans-serif-light"
             android:layout_gravity="center_horizontal"/>
 
@@ -55,6 +59,7 @@
         <ImageView
             android:id="@+id/list_item_icon"
             android:layout_width="match_parent"
+
             android:layout_height="0dp"
             android:layout_weight="5"/>
 
@@ -63,6 +68,8 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:textSize="22sp"
+            android:textColor="@color/white"
+
             android:fontFamily="sans-serif-condensed"
             android:layout_weight="1"/>
 

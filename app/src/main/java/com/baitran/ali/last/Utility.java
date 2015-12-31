@@ -8,8 +8,12 @@ package com.baitran.ali.last;
 
         import android.content.Context;
         import android.content.SharedPreferences;
+        import android.net.ConnectivityManager;
+        import android.net.NetworkInfo;
         import android.preference.PreferenceManager;
         import android.text.format.Time;
+
+        import com.baitran.ali.last.sync.MySyncAdapter;
 
         import java.text.DateFormat;
         import java.text.SimpleDateFormat;
@@ -187,4 +191,25 @@ public class Utility {
         }
         return String.format(context.getString(windFormat), windSpeed, direction);
     }
+    static public boolean isNetworkAvailable(Context context){
+    ConnectivityManager cm =
+            (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+    return activeNetwork!=null &&activeNetwork.isConnectedOrConnecting();
+}
+    @SuppressWarnings("ResourceType")
+    static public @MySyncAdapter.LocationStatus
+    int getLocationStatus(Context context){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt(context.getString(R.string.pref_location_status_key),
+                MySyncAdapter.LOCATION_STATUS_UNKNOWN );
+    }
+
+    static public void resetLocationStatus(Context c){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putInt(c.getString(R.string.pref_location_status_key),MySyncAdapter.LOCATION_STATUS_UNKNOWN);
+        spe.apply();
+    }
+
 }
