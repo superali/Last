@@ -31,7 +31,6 @@ package com.baitran.ali.last;
         import android.widget.TextView;
 
         import  com.baitran.ali.last.WeatherContract;
-        import com.baitran.ali.last.service.FirstService;
         import com.baitran.ali.last.sync.MySyncAdapter;
 
 /**

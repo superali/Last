@@ -74,7 +74,7 @@ public class ForecastAdapter extends CursorAdapter {
 
         viewHolder.dateView.setText(Utility.getFriendlyDayString(context, dateString));
 
-        String desc =cursor.getString(ForecastFragment.COL_WEATHER_DESC);
+        String desc =Utility.translateWeatherDiscription(context, cursor.getString(ForecastFragment.COL_WEATHER_DESC));
         //TextView descTextView = (TextView)view.findViewById(R.id.list_item_forecast_textview);
         viewHolder.descView.setText(desc);
         viewHolder.iconView.setContentDescription(desc);

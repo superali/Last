@@ -162,7 +162,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         long dateString = data.getLong(COL_WEATHER_DATE);
 
         String weatherDescription =
-                data.getString(COL_WEATHER_DESC);
+                Utility.translateWeatherDiscription(getActivity(), data.getString(COL_WEATHER_DESC));
         mIconView.setContentDescription(weatherDescription);
 
 

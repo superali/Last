@@ -20,6 +20,28 @@ package com.baitran.ali.last;
         import java.util.Date;
 
 public class Utility {
+    public static String translateWeatherDiscription(Context c, String desc){
+                if (desc.equals("Clear")){
+                    desc =c.getString(R.string.condition_clear);
+
+                }else if(desc.equals("Snow")){
+                    desc =c.getString(R.string.condition_snow);
+
+                }else if(desc.equals("Rain")){
+                    desc =c.getString(R.string.condition_rain);
+
+                }else if(desc.equals("Clouds")){
+                    desc =c.getString(R.string.condition_clouds);
+
+                }else if(desc.equals("Storm")){
+                    desc =c.getString(R.string.condition_storm);
+
+                }
+
+        return desc;
+
+
+    }
     public static int getArtResourceForWeatherCondition(int weatherId) {
         // Based on weather code data found at:
         // http://bugs.openweathermap.org/projects/api/wiki/Weather_Condition_Codes

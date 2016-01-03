@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.baitran.ali.last" >
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <permission android:name="com.baitran.ali.last.permission.C2D_MESSAGE"
+        android:protectionLevel="signature"/>
+
+    <uses-permission android:name="com.baitran.ali.last.permission.C2D_MESSAGE" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
@@ -42,7 +50,6 @@
         android:name=".WeatherProvider"
         android:syncable="true"
         android:exported="false"/>
-        <service android:name=".service.FirstService" />
 
         <!-- SyncAdapter's dummy authentication service -->
         <service android:name=".sync.MyAuthenticatorService" >

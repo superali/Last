@@ -12,6 +12,11 @@
     <string name="title_activity_settings">Settings</string>
     - <!--  Label for the location preference [CHAR LIMIT=30]
   -->
+    <string name="condition_clear">Clear</string>
+    <string name="condition_snow">Snow</string>
+    <string name="condition_clouds">Clouds</string>
+    <string name="condition_storm">Storm</string>
+    <string name="condition_rain">Rain</string>
     <string name="pref_location_label">Location</string>
     - <!--  Key name for storing location in SharedPreferences [CHAR LIMIT=NONE]
   -->
